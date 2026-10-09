@@ -39,7 +39,55 @@ python -m http.server 8080
 
 ## Despliegue
 
-- **Firebase Hosting:** `firebase init hosting` (public: `.`), luego `firebase deploy`.
-- **GitHub Pages / Netlify / Vercel / Cloudflare Pages:** sube la carpeta tal cual; no requiere configuración.
+Esta variante es la que está publicada en **https://juliocesarsandoval.com**, con Firebase Hosting.
 
-Antes de publicar, ajusta `rel="canonical"` y las URLs `og:image` en `index.html` si el dominio final cambia.
+### Dónde vive
+
+| Proyecto de Firebase | Sitio | Dominio | Uso |
+|---|---|---|---|
+| `juliocesar-dev` (JulioCesarPortafolio) | https://juliocesar-dev.web.app | `juliocesarsandoval.com` y `www.juliocesarsandoval.com` | **Producción.** Es lo que ve la gente. |
+| `juliocesarportafolio2026` (JulioCesarPortafolio2026) | https://juliocesarportafolio2026.web.app | Ninguno | Copia sin dominio. Solo se actualiza si publicas ahí a propósito. |
+
+Quien decide qué sitio se sirve en el dominio es Firebase (Hosting → Dominios personalizados), no el DNS. Los dos proyectos usan la misma IP (`199.36.158.100`), así que el DNS por sí solo no dice a cuál apunta. El TXT `hosting-site=…` de Hostinger solo sirve para verificar la propiedad del dominio.
+
+`.firebaserc` tiene `juliocesar-dev` como proyecto por defecto, así que `firebase deploy` publica directo en producción.
+
+### Publicar un cambio
+
+```powershell
+cd C:\Users\Julio\Downloads\Portafolio\05-editorial-magazine
+firebase deploy --only hosting
+git add .
+git commit -m "Describe el cambio"
+git push
+```
+
+Guardar en GitHub (`git push`, repo `SandovalJulio/Portafolio2026`) no publica el sitio: hay que correr `firebase deploy` aparte.
+
+Para confirmar que el cambio está en vivo, revisa https://juliocesarsandoval.com, no solo la URL `.web.app`. El navegador puede guardar la página hasta 1 hora (`max-age=3600`); usa Ctrl+F5 o una ventana de incógnito.
+
+### DNS (Hostinger)
+
+| Registro | Valor |
+|---|---|
+| A `@` | `199.36.158.100` |
+| TXT `@` | `hosting-site=juliocesarportafolio2026` |
+| CNAME `www` | `juliocesarportafolio2026.web.app` |
+
+El TXT y el CNAME ya nombran al proyecto `juliocesarportafolio2026`, pero el dominio sigue conectado en Firebase a `juliocesar-dev`, y así funciona bien.
+
+### Pasar el dominio al proyecto nuevo (opcional)
+
+1. En la consola de `juliocesar-dev` → Hosting, quita `juliocesarsandoval.com` y `www.juliocesarsandoval.com`.
+2. En `juliocesarportafolio2026` → Hosting → Agregar dominio personalizado, agrega los dos (`www` con redirección al dominio principal). El DNS de Hostinger ya está listo.
+3. Cambia `default` en `.firebaserc` a `juliocesarportafolio2026`.
+
+Mientras Firebase emite el certificado, el dominio puede fallar unos minutos.
+
+### Otros dominios en `juliocesar-dev`
+
+`juliocesar.pro` (activo, con error de host) y `manuelito.es.org` (verificación perdida) siguen registrados en ese sitio. No afectan a `juliocesarsandoval.com`.
+
+### Otros hostings
+
+En GitHub Pages, Netlify, Vercel o Cloudflare Pages basta con subir la carpeta tal cual. Si cambia el dominio final, ajusta `rel="canonical"` y las URLs `og:image` en `index.html`.
