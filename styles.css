@@ -335,6 +335,7 @@ figcaption {
   line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 0.75rem;
   font-variation-settings: "opsz" 72;
 }
+.pullquote .link-arrow { display: table; margin: 1.25rem auto 0; font-size: 1.05rem; }
 .pullquote cite { font-style: normal; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
 .pullquote--inline {
   margin: 1.5rem 0; max-width: none; text-align: left;
